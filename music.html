@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Lettore di Musica Rilassante</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #f8fafc; /* slate-50 */
+      font-family: 'Inter', sans-serif;
+      color: #334155; /* slate-700 */
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1e293b; /* slate-800 */
+      margin-bottom: 1.5rem;
+    }
+
+    select, button {
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      margin: 10px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #cbd5e1; /* slate-300 */
+      transition: all 0.2s ease-in-out;
+      width: 100%;
+      max-width: 350px;
+      box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    }
+    
+    select {
+      background-color: white;
+    }
+
+    select:focus, button:focus {
+        outline: 2px solid transparent;
+        outline-offset: 2px;
+        border-color: #38bdf8; /* sky-400 */
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+    }
+
+    button {
+      background-color: #0ea5e9; /* sky-500 */
+      color: white;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0284c7; /* sky-700 */
+    }
+    
+    button:active {
+        transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+  <h2>🎵 Musica per il Relax</h2>
+  <select id="audioSelect">
+    <option value="https://files.catbox.moe/zc81yy.mp3">Traccia Personalizzata</option>
+    <option value="https://archive.org/download/calm-and-peaceful-115361/calm-and-peaceful-115361.mp3">Calma e Pace</option>
+    <option value="https://archive.org/download/sound-of-rain-and-thunder-115121/sound-of-rain-and-thunder-115121.mp3">Pioggia e Tuoni</option>
+  </select>
+
+  <button id="playBtn">▶️ Riproduci</button>
+
+  <audio id="player" loop></audio>
+
+  <script>
+    const player = document.getElementById('player');
+    const button = document.getElementById('playBtn');
+    const select = document.getElementById('audioSelect');
+
+    // Carica la prima traccia di default
+    player.src = select.value;
+
+    button.addEventListener('click', () => {
+      // Sincronizza sempre il player con il valore selezionato prima di agire
+      if (player.src !== select.value) {
+        player.src = select.value;
+      }
+
+      if (player.paused) {
+        // La chiamata a play() è diretta conseguenza del click
+        player.play().catch(e => {
+            console.error("Riproduzione audio fallita:", e);
+            alert("Impossibile riprodurre l'audio. L'interazione con la pagina potrebbe essere richiesta prima.");
+        });
+        button.textContent = '⏸️ Pausa';
+      } else {
+        player.pause();
+        button.textContent = '▶️ Riproduci';
+      }
+    });
+
+    select.addEventListener('change', () => {
+      // Quando si cambia traccia, aggiorna la sorgente e ferma la riproduzione
+      player.src = select.value;
+      player.pause();
+      button.textContent = '▶️ Riproduci';
+    });
+
+    // Aggiorna il pulsante quando la musica finisce (in caso di non-loop)
+    player.addEventListener('ended', () => {
+        button.textContent = '▶️ Riproduci';
+    });
+  </script>
+</body>
+</html>
